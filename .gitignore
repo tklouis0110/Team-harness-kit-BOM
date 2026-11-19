@@ -4,3 +4,5 @@ tasks/*/data/*.csv
 tasks/*/out/
 __pycache__/
 _to_delete/
+# SharePoint から読み出した原本の写し（予算金額を含むため GitHub に上げない）
+tasks/*/data/raw/
