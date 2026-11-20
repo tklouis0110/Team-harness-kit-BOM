@@ -1,0 +1,26 @@
+{
+  "file:見本_sheet1_GroupRouting.txt": {
+    "fetched_at": "2026-11-20T11:50:34+00:00",
+    "source": "tasks/IZ-002/data/raw/見本_sheet1_GroupRouting.txt",
+    "rows": "-",
+    "sha256": "3c68c389560323b59f4da168ff026bba4224f5d92fb91712c2818bdba9df411f"
+  },
+  "file:見本_sheet2_シングル_日報.txt": {
+    "fetched_at": "2026-11-20T11:50:34+00:00",
+    "source": "tasks/IZ-002/data/raw/見本_sheet2_シングル_日報.txt",
+    "rows": "-",
+    "sha256": "3f06d9471d5d2d4a4e9c96ff027d4b84cc665ccb70b5a80ec11113e57c4ba3d1"
+  },
+  "file:見本_sheet3_ハイブリッド_日報.txt": {
+    "fetched_at": "2026-11-20T11:50:34+00:00",
+    "source": "tasks/IZ-002/data/raw/見本_sheet3_ハイブリッド_日報.txt",
+    "rows": "-",
+    "sha256": "ebcdfa0d37dcb1fafd68c4b8fe8fb0e1079ecf433e69b7c3b5ba342b717072b0"
+  },
+  "file:見本_sheet4_日報Map.txt": {
+    "fetched_at": "2026-11-20T11:50:34+00:00",
+    "source": "tasks/IZ-002/data/raw/見本_sheet4_日報Map.txt",
+    "rows": "-",
+    "sha256": "17335330696d78f801e5b42196768fcb85cdc60b227c065fcbee029588c8053f"
+  }
+}
