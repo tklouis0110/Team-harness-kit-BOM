@@ -84,21 +84,44 @@ def entries(fam):
     return [(xr, r[0].strip(), r) for xr, r in fam["products"] if any(v.strip() for v in r[fam["start"]:])]
 
 
+def name_index(products):
+    """(製造国, 製品名, 顧客名)（前後の空白を除く）-> その Sheet1 の ID のリスト（規則 5）。"""
+    idx = {}
+    for p in products:
+        idx.setdefault((p["country"].strip(), p["name"].strip(), p["customer"].strip()), []).append(p["id"].strip())
+    return idx
+
+
+def link_product(idx, r):
+    """ファミリーシートの 1 行 r -> (候補, 製品ID または None)。規則 5。
+    候補 1 つ -> その ID。2 つ以上 -> 元のID（A 列）が候補にあればそれ、無ければ None。0 件 -> None。"""
+    cand = idx.get(tuple(v.strip() for v in r[1:4]), [])
+    if len(cand) == 1:
+        return cand, cand[0]
+    if len(cand) >= 2 and r[0].strip() in cand:
+        return cand, r[0].strip()
+    return cand, None
+
+
 def check_link(products, fams):
-    """規則 6（C02）。(a)(b)(c) を確かめ、外れた分を返す。"""
-    m = {p["id"].strip(): [p["country"].strip(), p["name"].strip(), p["customer"].strip()] for p in products}
-    problems = []
+    """規則 6（C02）。(a)(b) を確かめ、外れた分を返す。
+    戻り値: (外れのリスト, 結び付き dict[(シート名, excel行)] = 製品ID, IDずれの件数)"""
+    idx = name_index(products)
+    problems, links, shifted = [], {}, 0
     for fam in fams:
         seen = {}
         for xr, i, r in entries(fam):
-            if i not in m:
-                problems.append((fam["name"], xr, i, "(a) IDがSheet1に無い"))
-            elif m[i] != [v.strip() for v in r[1:4]]:
-                problems.append((fam["name"], xr, i, "(b) 製造国・製品名・顧客名が違う"))
-            if i in seen:
-                problems.append((fam["name"], xr, i, f"(c) 同じIDの記入行が重複（{seen[i]}行目）"))
-            seen[i] = xr
-    return problems
+            cand, pid = link_product(idx, r)
+            if pid is None:
+                problems.append((fam["name"], xr, i, f"(a) 名前が一致する Sheet1 の行が {len(cand)} 件で決まらない"))
+                continue
+            links[(fam["name"], xr)] = pid
+            if pid != i:
+                shifted += 1
+            if pid in seen:
+                problems.append((fam["name"], xr, i, f"(b) 同じ製品ID {pid} の記入行が重複（{seen[pid]}行目）"))
+            seen[pid] = xr
+    return problems, links, shifted
 
 
 if __name__ == "__main__":
@@ -109,5 +132,6 @@ if __name__ == "__main__":
         e = entries(fam)
         print(fam["name"], "見出し行", fam["h"] + 1, "工程列開始", col_letter(fam["start"]),
               "工程列数", fam["ncols"] - fam["start"], "製品行", len(fam["products"]), "記入のある行", len(e))
-    pr = check_link(prods, fams)
+    pr, links, shifted = check_link(prods, fams)
+    print("記入行", len(links) + len(pr), "つながった", len(links), "IDずれ", shifted)
     print("C02 外れ", len(pr), pr[:5])
