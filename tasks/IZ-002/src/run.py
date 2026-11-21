@@ -1,4 +1,4 @@
-"""入口。引数なしで実行。現時点は S6（Excel まで）。見本照合・summary は S7 で足す。"""
+"""入口。引数なしで実行。data/ と IZ-001 の入力から out/ を全部作り直す（S7: 見本照合・判定・summary まで）。"""
 import collections
 import os
 import sys
@@ -8,6 +8,7 @@ from inputs import FAMILIES, load_inputs  # noqa: E402
 from nippo_map import build_map, write_map  # noqa: E402
 from excel_out import build_excel  # noqa: E402
 from flow import build, write_csv, DETAIL_COLS, GROUP_COLS  # noqa: E402
+import verify  # noqa: E402
 
 
 def main():
@@ -26,12 +27,17 @@ def main():
     print("日報Map", len(rows), dict(collections.Counter(r["ファミリー"] for r in rows)), "前後", dict(collections.Counter(r["前後の区分"] for r in rows)))
     detail, groups = build(d, rows)
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out")
-    write_csv(os.path.join(out, "GroupRouting明細.csv"), DETAIL_COLS, detail)
-    write_csv(os.path.join(out, "グループ一覧.csv"), GROUP_COLS, groups)
-    print("明細", len(detail), "グループ一覧", len(groups))
     xlsx = os.path.join(out, "261121_GroupRouting_v1.xlsx")
     build_excel(d, rows, detail, groups, xlsx)
     print("Excel", os.path.basename(xlsx))
+    vrows = verify.compare(detail, groups, rows, xlsx)
+    verify.apply_judgement(detail, vrows)
+    write_csv(os.path.join(out, "GroupRouting明細.csv"), DETAIL_COLS, detail)
+    write_csv(os.path.join(out, "グループ一覧.csv"), GROUP_COLS, groups)
+    verify.write_all(os.path.join(out, "見本照合.csv"), verify.VCOLS, vrows)
+    summ = verify.make_summary(d, detail, groups, vrows)
+    verify.write_all(os.path.join(out, "summary.csv"), ["項目", "値"], summ)
+    print("明細", len(detail), "グループ一覧", len(groups), "見本照合", len(vrows), "summary", len(summ))
     for t in ("Group Routing", "前工程G", "後工程G"):
         print(t, {f: sum(1 for g in groups if g["表"] == t and g["ファミリー"] == f) for f in FAMILIES})
     print("判定 要確認", sum(1 for x in detail if x["判定"] == "要確認"))
