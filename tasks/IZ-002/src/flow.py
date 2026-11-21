@@ -229,6 +229,7 @@ def build(d, map_rows):
                     groups.append(r)
     tord = {"Group Routing": 0, "前工程G": 1, "後工程G": 2}
     groups.sort(key=lambda r: (tord[r["表"]], FAMILIES.index(r["ファミリー"]), r["区分"] != "通常", r["並び順"]))
+    add_features(groups, prods)
     # 明細
     kub = {(g["ファミリー"], g["グループ記号"]): g["区分"] for g in groups if g["表"] == "Group Routing"}
     prods.sort(key=lambda x: (FAMILIES.index(x["fam"]), K(x["fg"]), K(x["bg"]), -x["budget"], int(x["pid"])))
@@ -243,6 +244,46 @@ def build(d, map_rows):
                        "追加工程（自由記入）": x["extra"], "備考": x["note"], "見本との照合": "未照合",
                        "判定": x["judge"], "根拠": x["basis"]})
     return detail, groups
+
+
+FIXED = "固定（未入力・外注）"
+AIMARK = "（AI下書き・要確認）"
+
+
+def load_sample_features():
+    """規則 24: 見本 ② の (ファミリー, 日報工程フロー) → 特徴。"""
+    import re
+    rows = read_text(os.path.join(BASE, "data", "raw", "見本_sheet1_GroupRouting.txt"))
+    return {(r[1], r[8]): r[2] for r in rows if re.fullmatch("[A-Z]+F[0-9][0-9]", r[0])}
+
+
+def load_drafts():
+    p = os.path.join(BASE, "src", "特徴_下書き.csv")
+    return {(r["ファミリー"], r["前工程フロー"]): r["特徴"] for r in csv.DictReader(open(p, encoding="utf-8-sig", newline=""))}
+
+
+def add_features(groups, prods):
+    """規則 24。前工程G → 特徴と出どころ。Group Routing 表は前工程G の特徴と同じ。後工程G は B00 のみ固定。"""
+    sample, drafts = load_sample_features(), load_drafts()
+    flow_of = {(x["fam"], x["fg"]): x["ff"] for x in prods}
+    fe = {}
+    for (fam, fg), ff in flow_of.items():
+        if fg[-2:] == "00":
+            fe[(fam, fg)] = ("前工程 未入力", FIXED)
+        elif fg[-2:] == "99":
+            fe[(fam, fg)] = ("前工程 外注", FIXED)
+        elif fam in ("シングル", "ハイブリッド") and (fam, ff) in sample:
+            fe[(fam, fg)] = (sample[(fam, ff)], "見本")
+        elif (fam, ff) in drafts and drafts[(fam, ff)].strip():
+            fe[(fam, fg)] = (drafts[(fam, ff)].strip() + AIMARK, "AI下書き（要確認）")
+        else:
+            raise StopError(f"特徴の下書きが無い前工程フロー: {fam} {fg} {ff}")
+    for g in groups:
+        if g["表"] == "後工程G":
+            g["特徴"], g["特徴の出どころ"] = ("後工程 未入力", FIXED) if g["グループ記号"][-2:] == "00" else ("", "なし")
+        else:
+            fg = g["グループ記号"].split("-")[0]
+            g["特徴"], g["特徴の出どころ"] = fe[(g["ファミリー"], fg)]
 
 
 def write_csv(path, cols, rows):

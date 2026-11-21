@@ -1,4 +1,4 @@
-"""入口。引数なしで実行。現時点は S4（明細・グループ一覧）まで。後の手順で out/ の作成を足す。"""
+"""入口。引数なしで実行。現時点は S6（Excel まで）。見本照合・summary は S7 で足す。"""
 import collections
 import os
 import sys
@@ -6,6 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from inputs import FAMILIES, load_inputs  # noqa: E402
 from nippo_map import build_map, write_map  # noqa: E402
+from excel_out import build_excel  # noqa: E402
 from flow import build, write_csv, DETAIL_COLS, GROUP_COLS  # noqa: E402
 
 
@@ -28,6 +29,9 @@ def main():
     write_csv(os.path.join(out, "GroupRouting明細.csv"), DETAIL_COLS, detail)
     write_csv(os.path.join(out, "グループ一覧.csv"), GROUP_COLS, groups)
     print("明細", len(detail), "グループ一覧", len(groups))
+    xlsx = os.path.join(out, "261121_GroupRouting_v1.xlsx")
+    build_excel(d, rows, detail, groups, xlsx)
+    print("Excel", os.path.basename(xlsx))
     for t in ("Group Routing", "前工程G", "後工程G"):
         print(t, {f: sum(1 for g in groups if g["表"] == t and g["ファミリー"] == f) for f in FAMILIES})
     print("判定 要確認", sum(1 for x in detail if x["判定"] == "要確認"))

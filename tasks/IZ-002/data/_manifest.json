@@ -22,5 +22,59 @@
     "source": "tasks/IZ-002/data/raw/見本_sheet4_日報Map.txt",
     "rows": "-",
     "sha256": "17335330696d78f801e5b42196768fcb85cdc60b227c065fcbee029588c8053f"
+  },
+  "file:sheet1_Sheet1.txt": {
+    "fetched_at": "2026-11-21T11:24:45+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet1_Sheet1.txt",
+    "rows": "-",
+    "sha256": "a32b6162a9b4c3bf4cfae9b16bdb99daac01c1f11681c13b3c36308e8b3a32b5"
+  },
+  "file:sheet2_モリブデン.txt": {
+    "fetched_at": "2026-11-21T11:24:45+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet2_モリブデン.txt",
+    "rows": "-",
+    "sha256": "83fea6a7ff0c11477ff2477466e3dfbd3319300d29195a3352f194756d5ddd1c"
+  },
+  "file:sheet3_電鋳.txt": {
+    "fetched_at": "2026-11-21T11:24:45+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet3_電鋳.txt",
+    "rows": "-",
+    "sha256": "f5707ec23ffccb7a0627ced148216a80dea90240e360b39e01a5d86782afb945"
+  },
+  "file:sheet4_ミラーブラック.txt": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet4_ミラーブラック.txt",
+    "rows": "-",
+    "sha256": "55ffcc9ec2b8d8dd42e05aec3c0d73798763d0768854df4935f8a727d697c80e"
+  },
+  "file:sheet5_シングル.txt": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet5_シングル.txt",
+    "rows": "-",
+    "sha256": "4ab560ca8e3a8729e7c6d1d1da75a30e1ad724bf42e3c359027a5413d41b67f2"
+  },
+  "file:sheet6_ハイブリッド.txt": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/data/raw/sheet6_ハイブリッド.txt",
+    "rows": "-",
+    "sha256": "649384ef5e6448cf42de5d00a0f5f23a2ced3b9d920a39cf2861a3d83ae6b6ba"
+  },
+  "file:工順明細.csv": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/out/工順明細.csv",
+    "rows": "-",
+    "sha256": "28c4f047be92cc60ae356f62f0267c8ff14a7962735bc75d53cb51f94cf0bbae"
+  },
+  "file:製品一覧.csv": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/out/製品一覧.csv",
+    "rows": "-",
+    "sha256": "f991bb5e44642347446113067d8c278d3d0c90cbb7e120ac2e4ac121b4e62355"
+  },
+  "file:summary.csv": {
+    "fetched_at": "2026-11-21T11:24:46+00:00",
+    "source": "tasks/IZ-001/out/summary.csv",
+    "rows": "-",
+    "sha256": "d073e8fe438a0eee7f53ef4029d7bb20b0366d378593179d3f8d1186895b0164"
   }
 }
