@@ -1,0 +1,32 @@
+{
+  "file:item_routing.csv": {
+    "fetched_at": "2026-11-26T03:11:58+07:00",
+    "source": "tasks/IZ-001/out/item_routing.csv",
+    "rows": "-",
+    "sha256": "276b96aa8ebc9e68325a83866ccc4490f9e47be4ac9df1644e6fa3c2c21fa927"
+  },
+  "file:groups.csv": {
+    "fetched_at": "2026-11-26T03:11:58+07:00",
+    "source": "tasks/IZ-001/out/groups.csv",
+    "rows": "-",
+    "sha256": "399a3a23252c78d353ed5c7e4714eeb14ee428384abf51158870dffa24907021"
+  },
+  "file:item_steps.csv": {
+    "fetched_at": "2026-11-26T03:11:59+07:00",
+    "source": "tasks/IZ-001/out/item_steps.csv",
+    "rows": "-",
+    "sha256": "85adb00c0751468602b4d317a0c29459b6c9cbb5783b1bb733175c254a35fed9"
+  },
+  "file:nippo_map.csv": {
+    "fetched_at": "2026-11-26T03:12:00+07:00",
+    "source": "tasks/IZ-001/out/nippo_map.csv",
+    "rows": "-",
+    "sha256": "e7584a42fa81b1983428a72d0e9fb7f578b4392338926ab2bc55cf05810ca80b"
+  },
+  "file:summary.csv": {
+    "fetched_at": "2026-11-26T03:12:00+07:00",
+    "source": "tasks/IZ-001/out/summary.csv",
+    "rows": "-",
+    "sha256": "4edccdbb57bd8ac34d58817cd307fded6449423466a000c1b8379ba940f48aa6"
+  }
+}

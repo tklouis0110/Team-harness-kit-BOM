@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOM キャンバス</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header id="top">
+  <div class="row">
+    <strong id="counts">読み込み中…</strong>
+    <span class="spacer"></span>
+    <button id="reload" type="button">読み込み直す</button>
+  </div>
+  <div id="global-notes"></div>
+  <div class="warn">同時に編集すると、後から保存した人の操作は保存されません（読み込み直してやり直す）。</div>
+  <div class="row forms">
+    <form id="f-product" class="inline">
+      <b>新規品番</b>
+      <select name="group_id" id="group-select"></select>
+      <input name="product_name" placeholder="製品名" maxlength="100" required>
+      <button type="submit">追加</button>
+    </form>
+    <form id="f-item" class="inline">
+      <b>新規アイテム（部品）</b>
+      <input name="item_type" placeholder="種別（材料・消耗品など）" maxlength="20" required size="14">
+      <input name="code" placeholder="コード" maxlength="40" required size="12">
+      <input name="name" placeholder="名前" maxlength="100" required>
+      <button type="submit">追加</button>
+    </form>
+  </div>
+  <div id="msg" role="status"></div>
+</header>
+<main>
+  <section id="canvas-wrap"><div id="canvas"></div></section>
+  <aside id="panel"><p class="muted">キャンバスのグループか品番を押してください。</p></aside>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
