@@ -1,41 +1,24 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BOM キャンバス</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f4">
+  <title>BOM キャンバス | スタンドアロン</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
 </head>
 <body>
-<header id="top">
-  <div class="row">
-    <strong id="counts">読み込み中…</strong>
-    <span class="spacer"></span>
-    <button id="reload" type="button">読み込み直す</button>
+  <div class="app-shell">
+    <header class="topbar"><a class="brand" href="#" aria-label="BOM Workspace ホーム"><span class="brand-mark">◈</span><span><b>WORKSPACE</b><small>製造管理 / BOM</small></span></a><div class="breadcrumb">製品データ <span>›</span> <b>構成キャンバス</b></div><div class="user-badge" aria-label="生産管理">生</div></header>
+    <section class="summary" aria-label="データ概要"><div class="title-block"><span class="title-icon">▤</span><div><h1>BOM キャンバス</h1><p>製品グループと部品構成を一画面で管理</p></div></div><div class="stats"><div><b id="group-total">-</b><small>グループ</small></div><div><b id="product-total">-</b><small>品番 <i id="product-web"></i></small></div><div><b id="item-total">-</b><small>アイテム</small></div><div><b id="line-total">-</b><small>BOM 行</small></div></div><div class="warning">⚠ 同時に編集すると、後から保存した人の操作は保存されません（読み込み直してやり直す）。</div><button class="button subtle" id="reload">↻ 読み込み直す</button></section>
+    <section class="global-notes" id="global-notes" aria-label="全体の注記"></section>
+    <div class="conflict" id="conflict" hidden><b>他の人が先に保存しました。読み込み直してからやり直してください</b><button class="button green" id="conflict-reload">読み込み直す</button></div>
+    <main class="layout"><section class="canvas-panel" aria-label="製品構成キャンバス"><div class="canvas-toolbar"><b>● 製品構成</b><span class="family-total" id="family-total"></span><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="グループ・品番を検索..." aria-label="グループ・品番を検索"></label><button class="button subtle" id="toggle-all">すべて畳む</button><div class="zoom"><button aria-label="縮小" id="zoom-out">−</button><output id="zoom-level">100%</output><button aria-label="拡大" id="zoom-in">＋</button><button aria-label="全体に戻す" id="zoom-reset">⌗</button></div></div><div class="canvas-viewport" id="canvas-viewport"><div class="family-grid" id="families"></div></div><footer class="canvas-footer"><span>● 一致　 <i>● 類推</i>　 <b>● 要確認</b>　 <em>! 注記あり</em></span><span>ドラッグで移動 · ホイールで拡大・縮小</span><button class="button green" id="new-item">＋ 新規アイテム</button></footer></section>
+      <aside class="inspector" aria-label="品番の詳細"><header class="inspector-header"><b>▣ 品番の詳細</b><button class="button subtle" id="new-product">＋ 品番</button></header><section class="product-heading"><small id="product-group"></small><h2 id="product-name">品番を選択してください</h2><div><span id="product-judge" class="badge gray"></span><small id="product-id"></small><small id="product-origin"></small></div></section><section class="notes" aria-label="注記"><div class="section-title">注記 <span></span><small id="note-total">0</small></div><div id="notes-list"></div></section><nav class="tabs" aria-label="品番情報"><button class="active" data-tab="bom">▧ BOM <span id="bom-count">0</span></button><button data-tab="routing">↗ 工程 <span id="routing-count">0</span> <small>閲覧のみ</small></button></nav><section class="detail" id="detail"></section><footer class="inspector-footer"><span>● 操作ごとに保存されます</span><button id="reload-bottom">↻ 読み込み直す</button></footer></aside>
+    </main>
   </div>
-  <div id="global-notes"></div>
-  <div class="warn">同時に編集すると、後から保存した人の操作は保存されません（読み込み直してやり直す）。</div>
-  <div class="row forms">
-    <form id="f-product" class="inline">
-      <b>新規品番</b>
-      <select name="group_id" id="group-select"></select>
-      <input name="product_name" placeholder="製品名" maxlength="100" required>
-      <button type="submit">追加</button>
-    </form>
-    <form id="f-item" class="inline">
-      <b>新規アイテム（部品）</b>
-      <input name="item_type" placeholder="種別（材料・消耗品など）" maxlength="20" required size="14">
-      <input name="code" placeholder="コード" maxlength="40" required size="12">
-      <input name="name" placeholder="名前" maxlength="100" required>
-      <button type="submit">追加</button>
-    </form>
-  </div>
-  <div id="msg" role="status"></div>
-</header>
-<main>
-  <section id="canvas-wrap"><div id="canvas"></div></section>
-  <aside id="panel"><p class="muted">キャンバスのグループか品番を押してください。</p></aside>
-</main>
-<script src="/app.js"></script>
+  <dialog id="editor"><form method="dialog" id="editor-form"><header><div><h2 id="dialog-title">BOM に部品を追加</h2><p id="dialog-subtitle">部品・数量・単位を指定します</p></div><button class="close" value="cancel" aria-label="閉じる">×</button></header><div id="dialog-fields"></div><footer><button class="button subtle" value="cancel">キャンセル</button><button class="button green" id="dialog-save" value="save">保存する</button></footer></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

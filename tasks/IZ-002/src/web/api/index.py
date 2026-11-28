@@ -40,6 +40,8 @@ class handler(BaseHTTPRequestHandler):
                 return self._send(200, bomlib.meta(c, v))
             if path == "/api/canvas.svg":
                 return self._send(200, bomlib.canvas_svg(c, v).encode("utf-8"), "image/svg+xml; charset=utf-8")
+            if path == "/api/tree":
+                return self._send(200, bomlib.tree(c, v))
             if path == "/api/items":
                 return self._send(200, bomlib.items(c, v))
             if path == "/api/product":

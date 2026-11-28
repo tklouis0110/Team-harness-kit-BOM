@@ -69,6 +69,29 @@ def items(conn, version):
     return {"version": version, "items": rows(conn, "select item_code, item_type, name, origin from items order by item_type, item_code")}
 
 
+def tree(conn, version):
+    """全グループ・全品番を 1 回で返す（画面の一覧用。規則 D の /api/tree）。"""
+    m = meta(conn, version)
+    groups = rows(conn, "select group_id, family, front_g, back_g, front_section, front_feature, back_section, group_flow from product_groups order by sort_key")
+    prods = defaultdict(list)
+    rn = dict(conn.execute("select product_id, count(*) from routing_steps group by product_id").fetchall())
+    bn = dict(conn.execute("select product_id, count(*) from bom_lines group by product_id").fetchall())
+    pn = {t: n for t, n in conn.execute("select target_id, count(*) from notes where scope='product' group by target_id").fetchall()}
+    for p in rows(conn, "select product_id, product_name, judge, group_id from products order by sort_key"):
+        prods[p["group_id"]].append({"product_id": p["product_id"], "product_name": p["product_name"], "judge": p["judge"],
+                                     "routing_n": rn.get(p["product_id"], 0), "bom_n": bn.get(p["product_id"], 0), "notes_n": pn.get(p["product_id"], 0)})
+    gn = defaultdict(list)
+    for r in rows(conn, "select target_id, kind, text from notes where scope='group' order by note_id"):
+        gn[r["target_id"]].append({"kind": r["kind"], "text": r["text"]})
+    families = []
+    for g in groups:
+        if g["family"] not in families:
+            families.append(g["family"])
+        g["notes"] = gn.get(g["group_id"], [])
+        g["products"] = prods.get(g["group_id"], [])
+    return {"version": version, "counts": m["counts"], "global_notes": m["global_notes"], "families": families, "groups": groups}
+
+
 # ---------------------------------------------------------------- キャンバス（規則 C）
 ROW_H, HEAD_H, GAP, PAD, TOP = 20, 58, 28, 30, 30
 JUDGE_FILL = {"要確認": "#fbd5d5", "類推": "#fde6c8"}
